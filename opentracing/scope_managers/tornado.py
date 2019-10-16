@@ -21,7 +21,7 @@
 from __future__ import absolute_import
 
 import threading
-import tornado.stack_context
+import tornado.stack_context  # type: ignore
 
 from opentracing import Scope
 from opentracing.scope_managers import ThreadLocalScopeManager
@@ -276,5 +276,5 @@ def tracer_stack_context():
     """
     context = _TracerRequestContext()
     return ThreadSafeStackContext(
-            lambda: _TracerRequestContextManager(context)
+        lambda: _TracerRequestContextManager(context)
     )

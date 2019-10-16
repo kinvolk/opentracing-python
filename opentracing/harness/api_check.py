@@ -16,7 +16,7 @@ from __future__ import absolute_import
 
 import mock
 import time
-import pytest
+import pytest  # type: ignore
 
 import opentracing
 from opentracing import Format

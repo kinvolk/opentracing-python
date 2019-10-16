@@ -20,7 +20,7 @@
 
 from __future__ import absolute_import
 
-import gevent
+import gevent  # type: ignore
 
 from opentracing import Scope, ScopeManager
 from .constants import ACTIVE_ATTR

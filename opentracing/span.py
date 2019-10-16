@@ -14,6 +14,7 @@
 # limitations under the License.
 
 from __future__ import absolute_import
+from typing import Dict
 from . import logs
 
 from opentracing.ext import tags
@@ -31,7 +32,8 @@ class SpanContext(object):
     span_id, sampled)`` tuple).
     """
 
-    EMPTY_BAGGAGE = {}  # TODO would be nice to make this immutable
+    # TODO would be nice to make this immutable
+    EMPTY_BAGGAGE: Dict[object, object] = {}
 
     @property
     def baggage(self):
