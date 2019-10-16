@@ -76,3 +76,9 @@ perf.svg
 # vim
 *.swp
 .idea/
+
+# VS Code
+.vscode/
+
+# mypy
+.mypy_cache/
