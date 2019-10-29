@@ -2,14 +2,14 @@ from __future__ import print_function
 
 import gevent
 
-from opentracing.mocktracer import MockTracer
-from opentracing.scope_managers.gevent import GeventScopeManager
-from ..testcase import OpenTracingTestCase
+from ..otel_ot_shim_tracer import MockTracer
+from ..testcase import OpenTelemetryTestCase
 
 
-class TestGevent(OpenTracingTestCase):
+class TestGevent(OpenTelemetryTestCase):
     def setUp(self):
-        self.tracer = MockTracer(GeventScopeManager())
+        self.tracer = MockTracer()
+
 
     def test_main(self):
         # Start an isolated task and query for its result -and finish it-
@@ -30,7 +30,7 @@ class TestGevent(OpenTracingTestCase):
 
         # initial task is not related in any way to those two tasks
         self.assertNotSameTrace(spans[0], spans[1])
-        self.assertEqual(spans[0].parent_id, None)
+        self.assertEqual(spans[0].parent, None)
 
     def task(self, span):
         # Create a new Span for this task

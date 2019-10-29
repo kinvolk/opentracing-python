@@ -4,14 +4,13 @@ import functools
 
 import asyncio
 
-from opentracing.mocktracer import MockTracer
-from opentracing.scope_managers.asyncio import AsyncioScopeManager
-from ..testcase import OpenTracingTestCase
+from ..otel_ot_shim_tracer import MockTracer
+from ..testcase import OpenTelemetryTestCase
 
 
-class TestAsyncio(OpenTracingTestCase):
+class TestAsyncio(OpenTelemetryTestCase):
     def setUp(self):
-        self.tracer = MockTracer(AsyncioScopeManager())
+        self.tracer = MockTracer()
         self.loop = asyncio.get_event_loop()
 
     def test_main(self):

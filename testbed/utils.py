@@ -55,7 +55,7 @@ def get_one_by_tag(spans, key, value):
 
     found = []
     for span in spans:
-        if span.tags.get(key) == value:
+        if span.attributes.get(key) == value:
             found.append(span)
 
     if len(found) > 1:
@@ -69,7 +69,7 @@ def get_one_by_operation_name(spans, name):
     errors if more than one is found."""
     found = []
     for span in spans:
-        if span.operation_name == name:
+        if span.name == name:
             found.append(span)
 
     if len(found) > 1:

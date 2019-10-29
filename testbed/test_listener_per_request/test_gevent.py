@@ -3,9 +3,8 @@ from __future__ import print_function
 import gevent
 
 from opentracing.ext import tags
-from opentracing.mocktracer import MockTracer
-from opentracing.scope_managers.gevent import GeventScopeManager
-from ..testcase import OpenTracingTestCase
+from ..otel_ot_shim_tracer import MockTracer
+from ..testcase import OpenTelemetryTestCase
 from ..utils import get_one_by_tag
 
 from .response_listener import ResponseListener
@@ -28,9 +27,9 @@ class Client(object):
         return gevent.spawn(self.task, message, listener).get()
 
 
-class TestGevent(OpenTracingTestCase):
+class TestGevent(OpenTelemetryTestCase):
     def setUp(self):
-        self.tracer = MockTracer(GeventScopeManager())
+        self.tracer = MockTracer()
 
     def test_main(self):
         client = Client(self.tracer)

@@ -2,14 +2,13 @@ from __future__ import absolute_import, print_function
 
 import gevent
 
-from opentracing.mocktracer import MockTracer
-from opentracing.scope_managers.gevent import GeventScopeManager
-from ..testcase import OpenTracingTestCase
+from ..otel_ot_shim_tracer import MockTracer
+from ..testcase import OpenTelemetryTestCase
 
 
-class TestGevent(OpenTracingTestCase):
+class TestGevent(OpenTelemetryTestCase):
     def setUp(self):
-        self.tracer = MockTracer(GeventScopeManager())
+        self.tracer = MockTracer()
 
     def test_main(self):
         res = gevent.spawn(self.parent_task, 'message').get()

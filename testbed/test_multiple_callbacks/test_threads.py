@@ -5,8 +5,8 @@ import time
 
 from concurrent.futures import ThreadPoolExecutor
 
-from opentracing.mocktracer import MockTracer
-from ..testcase import OpenTracingTestCase
+from ..otel_ot_shim_tracer import MockTracer
+from ..testcase import OpenTelemetryTestCase
 from ..utils import RefCount, get_logger
 
 
@@ -14,7 +14,7 @@ random.seed()
 logger = get_logger(__name__)
 
 
-class TestThreads(OpenTracingTestCase):
+class TestThreads(OpenTelemetryTestCase):
     def setUp(self):
         self.tracer = MockTracer()
         self.executor = ThreadPoolExecutor(max_workers=3)

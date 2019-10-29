@@ -5,9 +5,8 @@ import functools
 from tornado import gen, ioloop
 
 from opentracing.ext import tags
-from opentracing.mocktracer import MockTracer
-from opentracing.scope_managers.tornado import TornadoScopeManager
-from ..testcase import OpenTracingTestCase
+from ..otel_ot_shim_tracer import MockTracer
+from ..testcase import OpenTelemetryTestCase
 from ..utils import get_one_by_tag
 
 from .response_listener import ResponseListener
@@ -33,9 +32,9 @@ class Client(object):
         return self.loop.run_sync(task_func)
 
 
-class TestTornado(OpenTracingTestCase):
+class TestTornado(OpenTelemetryTestCase):
     def setUp(self):
-        self.tracer = MockTracer(TornadoScopeManager())
+        self.tracer = MockTracer()
         self.loop = ioloop.IOLoop.current()
 
     def test_main(self):

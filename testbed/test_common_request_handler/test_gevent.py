@@ -3,9 +3,8 @@ from __future__ import print_function
 import gevent
 
 from opentracing.ext import tags
-from opentracing.mocktracer import MockTracer
-from opentracing.scope_managers.gevent import GeventScopeManager
-from ..testcase import OpenTracingTestCase
+from ..otel_ot_shim_tracer import MockTracer
+from ..testcase import OpenTelemetryTestCase
 from ..utils import get_logger, get_one_by_operation_name
 from .request_handler import RequestHandler
 
@@ -38,7 +37,7 @@ class Client(object):
         return gevent.spawn(self.send_task, message).get(timeout=timeout)
 
 
-class TestGevent(OpenTracingTestCase):
+class TestGevent(OpenTelemetryTestCase):
     """
     There is only one instance of 'RequestHandler' per 'Client'. Methods of
     'RequestHandler' are executed in different greenlets, and no Span
@@ -48,7 +47,7 @@ class TestGevent(OpenTracingTestCase):
     """
 
     def setUp(self):
-        self.tracer = MockTracer(GeventScopeManager())
+        self.tracer = MockTracer()
         self.client = Client(RequestHandler(self.tracer))
 
     def test_two_callbacks(self):
@@ -64,12 +63,12 @@ class TestGevent(OpenTracingTestCase):
         self.assertEquals(len(spans), 2)
 
         for span in spans:
-            self.assertEquals(span.tags.get(tags.SPAN_KIND, None),
+            self.assertEquals(span.attributes.get(tags.SPAN_KIND, None),
                               tags.SPAN_KIND_RPC_CLIENT)
 
         self.assertNotSameTrace(spans[0], spans[1])
-        self.assertIsNone(spans[0].parent_id)
-        self.assertIsNone(spans[1].parent_id)
+        self.assertIsNone(spans[0].parent)
+        self.assertIsNone(spans[1].parent)
 
     def test_parent_not_picked(self):
         """Active parent should not be picked up by child."""

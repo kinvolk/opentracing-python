@@ -3,16 +3,15 @@ from __future__ import print_function
 
 from tornado import gen, ioloop
 
-from opentracing.mocktracer import MockTracer
-from opentracing.scope_managers.tornado import TornadoScopeManager, \
-        tracer_stack_context
-from ..testcase import OpenTracingTestCase
+from ..otel_ot_shim_tracer import MockTracer
+from opentracing.scope_managers.tornado import tracer_stack_context
+from ..testcase import OpenTelemetryTestCase
 from ..utils import stop_loop_when
 
 
-class TestTornado(OpenTracingTestCase):
+class TestTornado(OpenTelemetryTestCase):
     def setUp(self):
-        self.tracer = MockTracer(TornadoScopeManager())
+        self.tracer = MockTracer()
         self.loop = ioloop.IOLoop.current()
 
     def test_main(self):
@@ -28,10 +27,10 @@ class TestTornado(OpenTracingTestCase):
 
         spans = self.tracer.finished_spans()
         self.assertEqual(len(spans), 1)
-        self.assertEqual(spans[0].operation_name, 'one')
+        self.assertEqual(spans[0].name, 'one')
 
         for i in range(1, 4):
-            self.assertEqual(spans[0].tags.get('key%s' % i, None), str(i))
+            self.assertEqual(spans[0].attributes.get('key%s' % i, None), str(i))
 
     # Since StackContext propagates the active Span
     # from the first callback, we don't need to re-activate

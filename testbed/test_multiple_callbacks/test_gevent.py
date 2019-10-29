@@ -5,7 +5,6 @@ import random
 import gevent
 
 from opentracing.mocktracer import MockTracer
-from opentracing.scope_managers.gevent import GeventScopeManager
 from ..testcase import OpenTracingTestCase
 from ..utils import get_logger
 
@@ -14,9 +13,9 @@ random.seed()
 logger = get_logger(__name__)
 
 
-class TestGevent(OpenTracingTestCase):
+class TestGevent(OpenTelemetryTestCase):
     def setUp(self):
-        self.tracer = MockTracer(GeventScopeManager())
+        self.tracer = MockTracer()
 
     def test_main(self):
         def main_task():

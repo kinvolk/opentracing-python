@@ -2,11 +2,10 @@ from __future__ import print_function
 
 from concurrent.futures import ThreadPoolExecutor
 
-from opentracing.mocktracer import MockTracer
-from ..testcase import OpenTracingTestCase
+from ..otel_ot_shim_tracer import MockTracer
+from ..testcase import OpenTelemetryTestCase
 
-
-class TestThreads(OpenTracingTestCase):
+class TestThreads(OpenTelemetryTestCase):
     def setUp(self):
         self.tracer = MockTracer()
         self.executor = ThreadPoolExecutor(max_workers=3)
@@ -30,7 +29,8 @@ class TestThreads(OpenTracingTestCase):
 
         # initial task is not related in any way to those two tasks
         self.assertNotSameTrace(spans[0], spans[1])
-        self.assertEqual(spans[0].parent_id, None)
+        self.assertEqual(spans[0].parent, None)
+        self.assertEqual(spans[2].parent, None)
 
     def task(self, span):
         # Create a new Span for this task

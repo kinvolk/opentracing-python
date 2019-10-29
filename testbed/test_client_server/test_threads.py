@@ -5,8 +5,8 @@ from six.moves import queue
 
 import opentracing
 from opentracing.ext import tags
-from opentracing.mocktracer import MockTracer
-from ..testcase import OpenTracingTestCase
+from ..otel_ot_shim_tracer import MockTracer
+from ..testcase import OpenTelemetryTestCase
 from ..utils import await_until, get_logger, get_one_by_tag
 
 
@@ -54,7 +54,7 @@ class Client(object):
         logger.info('Sent message from client')
 
 
-class TestThreads(OpenTracingTestCase):
+class TestThreads(OpenTelemetryTestCase):
     def setUp(self):
         self.tracer = MockTracer()
         self.queue = queue.Queue()
@@ -74,3 +74,9 @@ class TestThreads(OpenTracingTestCase):
         self.assertIsNotNone(get_one_by_tag(spans,
                                             tags.SPAN_KIND,
                                             tags.SPAN_KIND_RPC_CLIENT))
+
+        server_span = get_one_by_tag(spans, tags.SPAN_KIND, tags.SPAN_KIND_RPC_SERVER)
+        client_span = get_one_by_tag(spans, tags.SPAN_KIND, tags.SPAN_KIND_RPC_CLIENT)
+        self.assertIsChildOf(server_span, client_span)
+        #print(client_span.parent_id)
+        #print(server_span.parent_id)

@@ -3,9 +3,8 @@ from __future__ import print_function
 import asyncio
 
 from opentracing.ext import tags
-from opentracing.mocktracer import MockTracer
-from opentracing.scope_managers.asyncio import AsyncioScopeManager
-from ..testcase import OpenTracingTestCase
+from ..otel_ot_shim_tracer import MockTracer
+from ..testcase import OpenTelemetryTestCase
 from ..utils import get_one_by_tag
 
 from .response_listener import ResponseListener
@@ -29,9 +28,9 @@ class Client(object):
         return self.loop.run_until_complete(self.task(message, listener))
 
 
-class TestAsyncio(OpenTracingTestCase):
+class TestAsyncio(OpenTelemetryTestCase):
     def setUp(self):
-        self.tracer = MockTracer(AsyncioScopeManager())
+        self.tracer = MockTracer()
         self.loop = asyncio.get_event_loop()
 
     def test_main(self):

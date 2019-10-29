@@ -4,15 +4,14 @@ import functools
 
 from tornado import gen, ioloop
 
-from opentracing.mocktracer import MockTracer
-from opentracing.scope_managers.tornado import TornadoScopeManager, \
-        tracer_stack_context
-from ..testcase import OpenTracingTestCase
+from ..otel_ot_shim_tracer import MockTracer
+from opentracing.scope_managers.tornado import tracer_stack_context
+from ..testcase import OpenTelemetryTestCase
 
 
-class TestTornado(OpenTracingTestCase):
+class TestTornado(OpenTelemetryTestCase):
     def setUp(self):
-        self.tracer = MockTracer(TornadoScopeManager())
+        self.tracer = MockTracer()
         self.loop = ioloop.IOLoop.current()
 
     def test_main(self):

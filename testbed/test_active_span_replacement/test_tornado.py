@@ -2,16 +2,16 @@ from __future__ import print_function
 
 from tornado import gen, ioloop
 
-from opentracing.mocktracer import MockTracer
-from opentracing.scope_managers.tornado import TornadoScopeManager, \
-        tracer_stack_context
-from ..testcase import OpenTracingTestCase
+from ..otel_ot_shim_tracer import MockTracer
+from ..testcase import OpenTelemetryTestCase
+from opentracing.scope_managers.tornado import tracer_stack_context
+from ..testcase import OpenTelemetryTestCase
 from ..utils import stop_loop_when
 
 
-class TestTornado(OpenTracingTestCase):
+class TestTornado(OpenTelemetryTestCase):
     def setUp(self):
-        self.tracer = MockTracer(TornadoScopeManager())
+        self.tracer = MockTracer()
         self.loop = ioloop.IOLoop.current()
 
     def test_main(self):
@@ -36,7 +36,7 @@ class TestTornado(OpenTracingTestCase):
 
         # initial task is not related in any way to those two tasks
         self.assertNotSameTrace(spans[0], spans[1])
-        self.assertEqual(spans[0].parent_id, None)
+        self.assertEqual(spans[0].parent, None)
 
     @gen.coroutine
     def task(self, span):

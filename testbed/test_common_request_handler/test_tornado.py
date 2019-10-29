@@ -5,10 +5,10 @@ import functools
 from tornado import gen, ioloop
 
 from opentracing.ext import tags
-from opentracing.mocktracer import MockTracer
+from ..otel_ot_shim_tracer import MockTracer
 from opentracing.scope_managers.tornado import TornadoScopeManager, \
         tracer_stack_context
-from ..testcase import OpenTracingTestCase
+from ..testcase import OpenTelemetryTestCase
 from ..utils import get_logger, get_one_by_operation_name, stop_loop_when
 from .request_handler import RequestHandler
 
@@ -46,7 +46,7 @@ class Client(object):
                                   timeout)
 
 
-class TestTornado(OpenTracingTestCase):
+class TestTornado(OpenTelemetryTestCase):
     """
     There is only one instance of 'RequestHandler' per 'Client'. Methods of
     'RequestHandler' are executed in different coroutines but the StackContext
@@ -54,7 +54,7 @@ class TestTornado(OpenTracingTestCase):
     """
 
     def setUp(self):
-        self.tracer = MockTracer(TornadoScopeManager())
+        self.tracer = MockTracer()
         self.loop = ioloop.IOLoop.current()
         self.client = Client(RequestHandler(self.tracer), self.loop)
 
@@ -73,12 +73,12 @@ class TestTornado(OpenTracingTestCase):
         self.assertEquals(len(spans), 2)
 
         for span in spans:
-            self.assertEquals(span.tags.get(tags.SPAN_KIND, None),
+            self.assertEquals(span.attributes.get(tags.SPAN_KIND, None),
                               tags.SPAN_KIND_RPC_CLIENT)
 
         self.assertNotSameTrace(spans[0], spans[1])
-        self.assertIsNone(spans[0].parent_id)
-        self.assertIsNone(spans[1].parent_id)
+        self.assertIsNone(spans[0].parent)
+        self.assertIsNone(spans[1].parent)
 
     def test_parent_not_picked(self):
         """Active parent should not be picked up by child

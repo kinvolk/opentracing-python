@@ -2,15 +2,14 @@ from __future__ import print_function
 
 import asyncio
 
-from opentracing.mocktracer import MockTracer
-from ..testcase import OpenTracingTestCase
-from opentracing.scope_managers.asyncio import AsyncioScopeManager
+from ..otel_ot_shim_tracer import MockTracer
+from ..testcase import OpenTelemetryTestCase
 from ..utils import stop_loop_when
 
 
-class TestAsyncio(OpenTracingTestCase):
+class TestAsyncio(OpenTelemetryTestCase):
     def setUp(self):
-        self.tracer = MockTracer(AsyncioScopeManager())
+        self.tracer = MockTracer()
         self.loop = asyncio.get_event_loop()
 
     def test_main(self):
@@ -34,7 +33,7 @@ class TestAsyncio(OpenTracingTestCase):
 
         # initial task is not related in any way to those two tasks
         self.assertNotSameTrace(spans[0], spans[1])
-        self.assertEqual(spans[0].parent_id, None)
+        self.assertEqual(spans[0].parent, None)
 
     async def task(self, span):
         # Create a new Span for this task

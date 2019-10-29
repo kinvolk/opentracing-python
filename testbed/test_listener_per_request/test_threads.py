@@ -3,8 +3,8 @@ from __future__ import print_function
 from concurrent.futures import ThreadPoolExecutor
 
 from opentracing.ext import tags
-from opentracing.mocktracer import MockTracer
-from ..testcase import OpenTracingTestCase
+from ..otel_ot_shim_tracer import MockTracer
+from ..testcase import OpenTelemetryTestCase
 from ..utils import get_one_by_tag
 
 from .response_listener import ResponseListener
@@ -28,7 +28,7 @@ class Client(object):
         return self.executor.submit(self._task, message, listener).result()
 
 
-class TestThreads(OpenTracingTestCase):
+class TestThreads(OpenTelemetryTestCase):
     def setUp(self):
         self.tracer = MockTracer()
 

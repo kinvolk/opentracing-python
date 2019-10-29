@@ -4,10 +4,9 @@ import random
 
 from tornado import gen, ioloop
 
-from opentracing.mocktracer import MockTracer
-from opentracing.scope_managers.tornado import TornadoScopeManager, \
-        tracer_stack_context
-from ..testcase import OpenTracingTestCase
+from ..otel_ot_shim_tracer import MockTracer
+from opentracing.scope_managers.tornado import tracer_stack_context
+from ..testcase import OpenTelemetryTestCase
 from ..utils import get_logger, stop_loop_when
 
 
@@ -15,9 +14,9 @@ random.seed()
 logger = get_logger(__name__)
 
 
-class TestTornado(OpenTracingTestCase):
+class TestTornado(OpenTelemetryTestCase):
     def setUp(self):
-        self.tracer = MockTracer(TornadoScopeManager())
+        self.tracer = MockTracer()
         self.loop = ioloop.IOLoop.current()
 
     def test_main(self):

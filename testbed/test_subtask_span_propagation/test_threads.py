@@ -2,11 +2,11 @@ from __future__ import absolute_import, print_function
 
 from concurrent.futures import ThreadPoolExecutor
 
-from opentracing.mocktracer import MockTracer
-from ..testcase import OpenTracingTestCase
+from ..otel_ot_shim_tracer import MockTracer
+from ..testcase import OpenTelemetryTestCase
 
 
-class TestThreads(OpenTracingTestCase):
+class TestThreads(OpenTelemetryTestCase):
     def setUp(self):
         self.tracer = MockTracer()
         self.executor = ThreadPoolExecutor(max_workers=3)
